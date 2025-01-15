@@ -39,7 +39,10 @@ jobs:
          
            # Add ubuntu user to docker group
            sudo usermod -aG docker ubuntu
-           newgrp docker
+           newgrp docker  # Refresh group membership immediately
+         
+           # Verify Docker group permissions
+           groups ubuntu
          
            # Clone repository and build Docker image
            git clone https://github.com/aamirshaikh3/aws-pipeline.git
