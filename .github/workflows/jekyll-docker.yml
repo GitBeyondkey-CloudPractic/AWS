@@ -43,7 +43,11 @@ jobs:
          
            # Verify Docker group permissions
            groups ubuntu
-         
+           
+           # Ensure docker is working properly by listing images and containers
+           sudo docker ps -a
+           sudo docker images
+
            # Clone repository and build Docker image
            git clone https://github.com/aamirshaikh3/aws-pipeline.git
            cd aws-pipeline
@@ -56,12 +60,16 @@ jobs:
            DOCKERFILE
          
            # Build the Docker image
-           docker build -t my-nginx-image .
+           sudo docker build -t my-nginx-image .
          
            # Stop and remove the existing container (if any)
-           docker stop my-container || true
-           docker rm my-container || true
+           sudo docker stop my-container || true
+           sudo docker rm my-container || true
          
            # Run the Docker container
-           docker run -d -p 80:80 --name my-container my-nginx-image
+           sudo docker run -d -p 80:80 --name my-container my-nginx-image
+           
+           # Ensure the container is running
+           sudo docker ps -a
+           sudo docker logs my-container
          EOF
