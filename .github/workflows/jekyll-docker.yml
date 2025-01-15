@@ -41,9 +41,6 @@ jobs:
            sudo usermod -aG docker ubuntu
            newgrp docker  # Refresh group membership immediately
          
-           # Verify Docker group permissions
-           groups ubuntu
-           
            # Ensure docker is working properly by listing images and containers
            sudo docker ps -a
            sudo docker images
@@ -58,15 +55,23 @@ jobs:
              cd aws-pipeline
            fi
          
-           # Create Dockerfile
+           # Create Dockerfile (no indentation issue)
            cat > Dockerfile << 'DOCKERFILE'
-                FROM nginx:alpine
-                COPY contact.html /usr/share/nginx/html/contact.html  # Ensure contact.html is in the right location
-                EXPOSE 80
-                DOCKERFILE
+FROM nginx:alpine
+COPY contact.html /usr/share/nginx/html/contact.html  # Ensure contact.html is in the right location
+EXPOSE 80
+DOCKERFILE
          
            # Build the Docker image
            sudo docker build -t my-nginx-image .
+         
+           # Check if Docker build was successful
+           if [ $? -eq 0 ]; then
+             echo "Docker build successful."
+           else
+             echo "Docker build failed."
+             exit 1
+           fi
          
            # Stop and remove the existing container (if any)
            sudo docker stop my-container || true
