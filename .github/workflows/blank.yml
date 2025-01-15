@@ -1,9 +1,6 @@
 name: Deploy to EC2
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:  # This allows manual triggering of the workflow
 
 jobs:
@@ -27,12 +24,13 @@ jobs:
           echo 'COPY contact.html /usr/share/nginx/html/' >> Dockerfile
           echo 'EXPOSE 80' >> Dockerfile
 
-      # Build Docker image with contact.html
-      - name: Build Docker image
+      # Transfer the Dockerfile and contact.html to EC2
+      - name: Transfer Dockerfile and contact.html to EC2
         run: |
-          docker build -t my-html-container .
+          scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} Dockerfile ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} contact.html ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/
 
-      # Connect to EC2, install Docker (if not already installed), and run the container
+      # Connect to EC2, install Docker (if not already installed), and build the image
       - name: Deploy Docker container on EC2
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
@@ -43,7 +41,10 @@ jobs:
               sudo systemctl start docker
               sudo systemctl enable docker
             fi
-            # Run the Docker container with sudo (to avoid permission errors)
+            # Build Docker image on EC2
+            cd /home/ubuntu
+            sudo docker build -t my-html-container .
+            # Run the Docker container
             sudo docker run -d -p 80:80 --name html-container my-html-container
           EOF
 
