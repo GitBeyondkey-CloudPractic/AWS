@@ -48,16 +48,20 @@ jobs:
            sudo docker ps -a
            sudo docker images
 
-           # Clone repository and build Docker image
-           git clone https://github.com/aamirshaikh3/aws-pipeline.git
-           cd aws-pipeline
+           # Clone repository if not exists or update if exists
+           if [ -d "aws-pipeline" ]; then
+             cd aws-pipeline && git pull
+           else
+             git clone https://github.com/aamirshaikh3/aws-pipeline.git
+             cd aws-pipeline
+           fi
          
            # Create Dockerfile
            cat > Dockerfile << 'DOCKERFILE'
-           FROM nginx:alpine
-           COPY contact.html /usr/share/nginx/html/contact.html  # Ensure contact.html is in the right location
-           EXPOSE 80
-           DOCKERFILE
+                FROM nginx:alpine
+                COPY contact.html /usr/share/nginx/html/contact.html  # Ensure contact.html is in the right location
+                EXPOSE 80
+                DOCKERFILE
          
            # Build the Docker image
            sudo docker build -t my-nginx-image .
