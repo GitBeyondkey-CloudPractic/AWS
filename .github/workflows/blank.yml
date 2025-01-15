@@ -1,9 +1,6 @@
 name: Deploy to EC2
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:  # This allows manual triggering of the workflow
 
 jobs:
@@ -30,6 +27,7 @@ jobs:
       # Transfer the Dockerfile and contact.html to EC2
       - name: Transfer Dockerfile and contact.html to EC2
         run: |
+          # Ensure that the correct private key file is used here
           scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} Dockerfile ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/
           scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} contact.html ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/
 
