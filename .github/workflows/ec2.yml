@@ -40,13 +40,15 @@ jobs:
 
     - name: Run Docker commands on EC2
       run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+          ssh -t -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
             # Clone the GitHub repository
             git clone https://github.com/aamirshaikh3/aws-pipeline.git
             cd aws-pipeline
             # Create a Dockerfile
-            echo 'FROM nginx:latest
-                  COPY contact.html /usr/share/nginx/html' > Dockerfile
+            cat > Dockerfile << 'DOCKERFILE'
+            FROM nginx:latest
+            COPY contact.html /usr/share/nginx/html
+            DOCKERFILE
             # Build the Docker image
             docker build -t my-nginx-image .
             # Stop and remove the existing container (if any)
