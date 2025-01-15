@@ -50,7 +50,9 @@ jobs:
 
            # Clone repository if not exists or update if exists
            if [ -d "aws-pipeline" ]; then
-             cd aws-pipeline && git pull
+             cd aws-pipeline
+             git reset --hard  # Discard any local changes
+             git pull  # Pull the latest changes
            else
              git clone https://github.com/aamirshaikh3/aws-pipeline.git
              cd aws-pipeline
