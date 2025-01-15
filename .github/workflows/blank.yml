@@ -1,0 +1,49 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # This allows manual triggering of the workflow
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Setup SSH for connecting to EC2
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+
+      # Connect to EC2 and install Docker
+      - name: Install Docker on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+            # Update and install Docker
+            sudo apt-get update -y
+            sudo apt-get install -y docker.io
+            sudo systemctl start docker
+            sudo systemctl enable docker
+          EOF
+
+      # Build Docker image with contact.html from repo
+      - name: Build Docker image with contact.html
+        run: |
+          docker build -t my-html-container .
+
+      # Deploy Docker container on EC2
+      - name: Deploy Docker container on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+            docker run -d -p 80:80 --name html-container my-html-container
+          EOF
+
+      # Expose the public IP of the EC2 instance
+      - name: Get EC2 public IP
+        run: |
+          echo "EC2 Instance IP: ${{ secrets.EC2_HOST }}"
