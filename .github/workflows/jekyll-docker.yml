@@ -1,19 +1,19 @@
 name: Deploy Docker to EC2
- 
+
 on:
   push:
     branches:
       - main
   workflow_dispatch:  # This allows manual triggering of the workflow
- 
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
- 
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
- 
+
     - name: Set up SSH key for EC2 access
       uses: webfactory/ssh-agent@v0.5.3
       with:
@@ -21,7 +21,7 @@ jobs:
 
     - name: Run Docker commands on EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+        # SSH into the EC2 instance and run all necessary commands
         ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
            # Update and install necessary packages
            sudo apt-get update
@@ -37,7 +37,7 @@ jobs:
            docker --version
            sudo systemctl status docker
          
-           # Add ec2-user to docker group
+           # Add ubuntu user to docker group
            sudo usermod -aG docker ubuntu
            newgrp docker
          
