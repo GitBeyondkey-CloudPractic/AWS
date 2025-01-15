@@ -1,6 +1,9 @@
 name: Deploy to EC2
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:  # This allows manual triggering of the workflow
 
 jobs:
@@ -15,7 +18,7 @@ jobs:
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
       # Create Dockerfile dynamically
       - name: Create Dockerfile
@@ -24,10 +27,9 @@ jobs:
           echo 'COPY contact.html /usr/share/nginx/html/' >> Dockerfile
           echo 'EXPOSE 80' >> Dockerfile
 
-      # Transfer the Dockerfile and contact.html to EC2
+      # Transfer Dockerfile and contact.html to EC2 using the correct private key
       - name: Transfer Dockerfile and contact.html to EC2
         run: |
-          # Ensure that the correct private key file is used here
           scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} Dockerfile ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/
           scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} contact.html ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/
 
