@@ -55,12 +55,12 @@ jobs:
              cd aws-pipeline
            fi
          
-           # Create Dockerfile (no indentation issue)
-           cat > Dockerfile << 'DOCKERFILE'
-          FROM nginx:alpine
-          COPY contact.html /usr/share/nginx/html/contact.html  # Ensure contact.html is in the right location
-          EXPOSE 80
-          DOCKERFILE
+           # Create Dockerfile
+            cat > Dockerfile << 'DOCKERFILE'
+            FROM nginx:alpine
+            COPY contact.html /usr/share/nginx/html/contact.html  # Ensure contact.html is in the right location
+            EXPOSE 80
+            DOCKERFILE
          
            # Build the Docker image
            sudo docker build -t my-nginx-image .
