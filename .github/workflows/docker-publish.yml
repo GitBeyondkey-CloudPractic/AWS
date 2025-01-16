@@ -42,19 +42,19 @@ jobs:
            sudo docker images
     
            # Clone repository if not exists or update if exists
-           if [ -d "aws-pipeline" ]; then
-             cd aws
+           if [ -d "AWS" ]; then
+             cd AWS
              git reset --hard  # Discard any local changes
              git pull  # Pull the latest changes
            else
              git clone https://github.com/GitBeyondkey-CloudPractic/AWS.git
-             cd aws
+             cd AWS
            fi
          
            # Create Dockerfile_1
-            cat > Dockerfile << 'EOF'
+            cat > Dockerfile_1 << 'EOF'
             FROM nginx:alpine
-            COPY contact.html /usr/share/nginx/html/contact.html  # Ensure contact.html is in the right location
+            COPY /home/ubuntu/AWS/contact.html /usr/share/nginx/html/contact.html  # Ensure contact.html is in the right location
             EXPOSE 80
             EOF
          
