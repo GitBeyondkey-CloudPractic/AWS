@@ -58,10 +58,17 @@ jobs:
           #   EXPOSE 80
           # EOF
 
-          echo 'FROM nginx:alpine
+        #   echo 'FROM nginx:alpine
+        #   COPY AWS/contact.html /usr/share/nginx/html/contact.html
+        #   EXPOSE 80' > Dockerfile_1
+        #   # Upload contact.html if needed
+        # EOF
+
+         cat > Dockerfile_1 << 'EOL'
+          FROM nginx:alpine
           COPY AWS/contact.html /usr/share/nginx/html/contact.html
-          EXPOSE 80' > Dockerfile_1
-          # Upload contact.html if needed
+          EXPOSE 80
+          EOL
         EOF
 
         - name: Run Docker commands on EC2
