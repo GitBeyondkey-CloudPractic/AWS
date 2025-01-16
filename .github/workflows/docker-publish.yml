@@ -51,12 +51,18 @@ jobs:
             cd AWS
           fi
          
-          # Create Dockerfile_1
-          cat > Dockerfile_1 << 'EOF'
-            FROM nginx:alpine
-            COPY AWS/contact.html /usr/share/nginx/html/contact.html  # Ensure contact.html is in the right location
-            EXPOSE 80
-          EOF
+          # # Create Dockerfile_1
+          # cat > Dockerfile_1 << 'EOF'
+          #   FROM nginx:alpine
+          #   COPY AWS/contact.html /usr/share/nginx/html/contact.html  # Ensure contact.html is in the right location
+          #   EXPOSE 80
+          # EOF
+
+          echo 'FROM nginx:alpine
+          COPY AWS/contact.html /usr/share/nginx/html/contact.html
+          EXPOSE 80' > Dockerfile_1
+          # Upload contact.html if needed
+        EOF
 
         - name: Run Docker commands on EC2
           run: |
