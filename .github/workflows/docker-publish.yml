@@ -150,12 +150,15 @@ jobs:
             cd AWS
           fi
           
-          # Create Dockerfile_1
-          cat > Dockerfile_1 << 'EOL'
-          FROM nginx:alpine
-          COPY AWS/contact.html /usr/share/nginx/html/contact.html
-          EXPOSE 80
-         EOL
+         #  # Create Dockerfile_1
+         #  cat > Dockerfile_1 << 'EOL'
+         #  FROM nginx:alpine
+         #  COPY AWS/contact.html /usr/share/nginx/html/contact.html
+         #  EXPOSE 80
+         # EOL
+
+         # Create Dockerfile_1 using printf to ensure correct line breaks
+         printf "FROM nginx:alpine\nCOPY AWS/contact.html /usr/share/nginx/html/contact.html\nEXPOSE 80\n" > Dockerfile_1
 
           # Build the Docker image
           sudo docker build -t my-nginx-image ./AWS
