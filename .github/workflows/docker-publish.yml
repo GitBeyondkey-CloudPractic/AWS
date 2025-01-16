@@ -155,7 +155,7 @@ jobs:
           FROM nginx:alpine
           COPY AWS/contact.html /usr/share/nginx/html/contact.html
           EXPOSE 80
-          EOL
+         EOL
 
           # Build the Docker image
           sudo docker build -t my-nginx-image ./AWS
