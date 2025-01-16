@@ -43,15 +43,15 @@ jobs:
     
            # Clone repository if not exists or update if exists
            if [ -d "aws-pipeline" ]; then
-             cd aws-pipeline
+             cd aws
              git reset --hard  # Discard any local changes
              git pull  # Pull the latest changes
            else
              git clone https://github.com/GitBeyondkey-CloudPractic/AWS.git
-             cd aws-pipeline
+             cd aws
            fi
          
-           # Create Dockerfile
+           # Create Dockerfile_1
             cat > Dockerfile << 'EOF'
             FROM nginx:alpine
             COPY contact.html /usr/share/nginx/html/contact.html  # Ensure contact.html is in the right location
