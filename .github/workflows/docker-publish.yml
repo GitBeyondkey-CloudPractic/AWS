@@ -161,7 +161,7 @@ jobs:
          printf "FROM nginx:alpine\nCOPY AWS/contact.html /usr/share/nginx/html/contact.html\nEXPOSE 80\n" > Dockerfile_1
 
           # Build the Docker image
-          sudo docker build -t my-nginx-image ./AWS
+          sudo docker build -t my-nginx-image .
          
           # Check if Docker build was successful
           if [ $? -eq 0 ]; then
