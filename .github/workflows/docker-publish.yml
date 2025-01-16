@@ -68,7 +68,6 @@ jobs:
           FROM nginx:alpine
           COPY AWS/contact.html /usr/share/nginx/html/contact.html
           EXPOSE 80
-          EOL
         EOF
 
         - name: Run Docker commands on EC2
