@@ -19,63 +19,63 @@ jobs:
     - name: Run Docker commands on EC2
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST_TEST_INSTANCE_3 }} << 'EOF'
-           # Update and install necessary packages
-           sudo apt-get update
-           sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-           sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-           sudo apt-get update
-           sudo apt-get install -y docker-ce
-           sudo systemctl start docker
-           sudo systemctl enable docker
+          # Update and install necessary packages
+          sudo apt-get update
+          sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+          sudo apt-get update
+          sudo apt-get install -y docker-ce
+          sudo systemctl start docker
+          sudo systemctl enable docker
          
-           # Verify Docker installation
-           docker --version
-           sudo systemctl status docker
+          # Verify Docker installation
+          docker --version
+          sudo systemctl status docker
          
-           # Add ubuntu user to docker group
-           sudo usermod -aG docker ubuntu
-           newgrp docker  # Refresh group membership immediately
+          # Add ubuntu user to docker group
+          sudo usermod -aG docker ubuntu
+          newgrp docker  # Refresh group membership immediately
          
-           # Ensure docker is working properly by listing images and containers
-           sudo docker ps -a
-           sudo docker images
-    
-           # Clone repository if not exists or update if exists
-           if [ -d "AWS" ]; then
-             cd AWS
-             git reset --hard  # Discard any local changes
-             git pull  # Pull the latest changes
-           else
-             git clone https://github.com/GitBeyondkey-CloudPractic/AWS.git
-             cd AWS
-           fi
+          # Ensure docker is working properly by listing images and containers
+          sudo docker ps -a
+          sudo docker images
+      
+          # Clone repository if not exists or update if exists
+          if [ -d "AWS" ]; then
+            cd AWS
+            git reset --hard  # Discard any local changes
+            git pull  # Pull the latest changes
+          else
+            git clone https://github.com/GitBeyondkey-CloudPractic/AWS.git
+            cd AWS
+          fi
          
-           # Create Dockerfile_1
-            cat > Dockerfile_1 << 'EOF'
-            FROM nginx:alpine
-            COPY /home/ubuntu/AWS/contact.html /usr/share/nginx/html/contact.html  # Ensure contact.html is in the right location
-            EXPOSE 80
-            EOF
+          # Create Dockerfile_1
+          cat > Dockerfile_1 << 'EOF'
+          FROM nginx:alpine
+          COPY AWS/contact.html /usr/share/nginx/html/contact.html  # Ensure contact.html is in the right location
+          EXPOSE 80
+          EOF
          
-           # Build the Docker image
-           sudo docker build -t my-nginx-image .
+          # Build the Docker image
+          sudo docker build -t my-nginx-image ./AWS
          
-           # Check if Docker build was successful
-           if [ $? -eq 0 ]; then
-             echo "Docker build successful."
-           else
-             echo "Docker build failed."
-             exit 1
-           fi
+          # Check if Docker build was successful
+          if [ $? -eq 0 ]; then
+            echo "Docker build successful."
+          else
+            echo "Docker build failed."
+            exit 1
+          fi
          
-           # Stop and remove the existing container (if any)
-           sudo docker ps -a -q -f name=my-container | grep -q . && sudo docker stop my-container && sudo docker rm my-container || echo "No existing container to stop/remove."
+          # Stop and remove the existing container (if any)
+          sudo docker ps -a -q -f name=my-container | grep -q . && sudo docker stop my-container && sudo docker rm my-container || echo "No existing container to stop/remove."
          
-           # Run the Docker container
-           sudo docker run -d -p 80:80 --name my-container my-nginx-image
-           
-           # Ensure the container is running
-           sudo docker ps -a
-           sudo docker logs my-container
-         EOF
+          # Run the Docker container
+          sudo docker run -d -p 80:80 --name my-container my-nginx-image
+          
+          # Ensure the container is running
+          sudo docker ps -a
+          sudo docker logs my-container
+        EOF
